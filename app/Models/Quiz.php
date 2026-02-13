@@ -29,6 +29,14 @@ class Quiz extends Model
 		'finished_at'
 	];
 
+	public function casts(): array
+	{
+		return [
+			'started_at' => 'datetime',
+			'finished_at' => 'datetime',
+		];
+	}
+
 	public function questions(): HasMany
 	{
 		return $this->hasMany(Question::class);

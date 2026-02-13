@@ -41,6 +41,19 @@ import { store } from '@/routes/register';
                 </div>
 
                 <div class="grid gap-2">
+                    <Label for="username">Username</Label>
+                    <Input
+                        id="username"
+                        required
+                        :tabindex="2"
+                        autocomplete="username"
+                        name="username"
+                        placeholder="username"
+                    />
+                    <InputError :message="errors.username" />
+                </div>
+
+                <div class="grid gap-2">
                     <Label for="email">Email address</Label>
                     <Input
                         id="email"

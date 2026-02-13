@@ -1,17 +1,30 @@
-import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript';
+import {
+    defineConfigWithVueTs,
+    vueTsConfigs,
+} from '@vue/eslint-config-typescript';
 import prettier from 'eslint-config-prettier';
 import importPlugin from 'eslint-plugin-import';
+import unusedImports from 'eslint-plugin-unused-imports';
 import vue from 'eslint-plugin-vue';
 
 export default defineConfigWithVueTs(
     vue.configs['flat/essential'],
     vueTsConfigs.recommended,
     {
-        ignores: ['vendor', 'node_modules', 'public', 'bootstrap/ssr', 'tailwind.config.js', 'vite.config.ts', 'resources/js/components/ui/*'],
+        ignores: [
+            'vendor',
+            'node_modules',
+            'public',
+            'bootstrap/ssr',
+            'tailwind.config.js',
+            'vite.config.ts',
+            'resources/js/components/ui/*',
+        ],
     },
     {
         plugins: {
             import: importPlugin,
+            'unused-imports': unusedImports,
         },
         settings: {
             'import/resolver': {
@@ -22,6 +35,8 @@ export default defineConfigWithVueTs(
             },
         },
         rules: {
+            'unused-imports/no-unused-imports': 'error',
+            'unused-imports/no-unused-vars': 'warn',
             'vue/multi-word-component-names': 'off',
             '@typescript-eslint/no-explicit-any': 'off',
             '@typescript-eslint/consistent-type-imports': [
@@ -34,7 +49,14 @@ export default defineConfigWithVueTs(
             'import/order': [
                 'error',
                 {
-                    groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+                    groups: [
+                        'builtin',
+                        'external',
+                        'internal',
+                        'parent',
+                        'sibling',
+                        'index',
+                    ],
                     alphabetize: {
                         order: 'asc',
                         caseInsensitive: true,

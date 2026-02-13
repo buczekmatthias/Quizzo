@@ -12,3 +12,8 @@ export type NavItem = {
     icon?: LucideIcon;
     isActive?: boolean;
 };
+
+export type Navigation = {
+    main: NavItem[];
+    footer: NavItem[];
+};

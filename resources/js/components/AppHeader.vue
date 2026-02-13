@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, Menu, Search } from 'lucide-vue-next';
-import { computed } from 'vue';
+import { Link } from '@inertiajs/vue3';
+import { Menu } from 'lucide-vue-next';
+import type { ComputedRef } from 'vue';
 import AppLogo from '@/components/AppLogo.vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
@@ -34,9 +33,11 @@ import {
 import UserMenuContent from '@/components/UserMenuContent.vue';
 import { useCurrentUrl } from '@/composables/useCurrentUrl';
 import { getInitials } from '@/composables/useInitials';
+import { useAppNavigation } from '@/composables/useNavigation';
+import { useCurrentUser } from '@/composables/useUser';
 import { toUrl } from '@/lib/utils';
-import { dashboard } from '@/routes';
-import type { BreadcrumbItem, NavItem } from '@/types';
+import { home, login } from '@/routes';
+import type { Auth, BreadcrumbItem, Navigation } from '@/types';
 
 type Props = {
     breadcrumbs?: BreadcrumbItem[];
@@ -46,33 +47,13 @@ const props = withDefaults(defineProps<Props>(), {
     breadcrumbs: () => [],
 });
 
-const page = usePage();
-const auth = computed(() => page.props.auth);
+const auth: ComputedRef<Auth> = useCurrentUser;
 const { isCurrentUrl, whenCurrentUrl } = useCurrentUrl();
 
 const activeItemStyles =
     'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100';
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-];
-
-const rightNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/vue-starter-kit',
-        icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#vue',
-        icon: BookOpen,
-    },
-];
+const navigation: Navigation = useAppNavigation();
 </script>
 
 <template>
@@ -91,7 +72,7 @@ const rightNavItems: NavItem[] = [
                                 <Menu class="h-5 w-5" />
                             </Button>
                         </SheetTrigger>
-                        <SheetContent side="left" class="w-[300px] p-6">
+                        <SheetContent side="left" class="w-75 p-6">
                             <SheetTitle class="sr-only"
                                 >Navigation Menu</SheetTitle
                             >
@@ -103,9 +84,9 @@ const rightNavItems: NavItem[] = [
                             <div
                                 class="flex h-full flex-1 flex-col justify-between space-y-4 py-6"
                             >
-                                <nav class="-mx-3 space-y-1">
+                                <nav class="-mx-3 space-y-2">
                                     <Link
-                                        v-for="item in mainNavItems"
+                                        v-for="item in navigation.main"
                                         :key="item.title"
                                         :href="item.href"
                                         class="flex items-center gap-x-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent"
@@ -124,14 +105,16 @@ const rightNavItems: NavItem[] = [
                                         {{ item.title }}
                                     </Link>
                                 </nav>
-                                <div class="flex flex-col space-y-4">
-                                    <a
-                                        v-for="item in rightNavItems"
+
+                                <div
+                                    class="-mx-3 flex flex-col space-y-2"
+                                    v-if="navigation.footer.length > 0"
+                                >
+                                    <Link
+                                        v-for="item in navigation.footer"
                                         :key="item.title"
                                         :href="toUrl(item.href)"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        class="flex items-center space-x-2 text-sm font-medium"
+                                        class="flex items-center gap-x-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent"
                                     >
                                         <component
                                             v-if="item.icon"
@@ -139,14 +122,14 @@ const rightNavItems: NavItem[] = [
                                             class="h-5 w-5"
                                         />
                                         <span>{{ item.title }}</span>
-                                    </a>
+                                    </Link>
                                 </div>
                             </div>
                         </SheetContent>
                     </Sheet>
                 </div>
 
-                <Link :href="dashboard()" class="flex items-center gap-x-2">
+                <Link :href="home()" class="flex items-center gap-x-2">
                     <AppLogo />
                 </Link>
 
@@ -157,7 +140,7 @@ const rightNavItems: NavItem[] = [
                             class="flex h-full items-stretch space-x-2"
                         >
                             <NavigationMenuItem
-                                v-for="(item, index) in mainNavItems"
+                                v-for="(item, index) in navigation.main"
                                 :key="index"
                                 class="relative flex h-full items-center"
                             >
@@ -189,82 +172,63 @@ const rightNavItems: NavItem[] = [
                 </div>
 
                 <div class="ml-auto flex items-center space-x-2">
-                    <div class="relative flex items-center space-x-1">
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            class="group h-9 w-9 cursor-pointer"
+                    <div
+                        class="hidden space-x-1 lg:flex"
+                        v-if="navigation.footer.length > 0"
+                    >
+                        <template
+                            v-for="item in navigation.footer"
+                            :key="item.title"
                         >
-                            <Search
-                                class="size-5 opacity-80 group-hover:opacity-100"
-                            />
-                        </Button>
-
-                        <div class="hidden space-x-1 lg:flex">
-                            <template
-                                v-for="item in rightNavItems"
-                                :key="item.title"
-                            >
-                                <TooltipProvider :delay-duration="0">
-                                    <Tooltip>
-                                        <TooltipTrigger>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                as-child
-                                                class="group h-9 w-9 cursor-pointer"
+                            <TooltipProvider :delay-duration="0">
+                                <Tooltip>
+                                    <TooltipTrigger>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            as-child
+                                            class="group h-9 w-9 cursor-pointer"
+                                        >
+                                            <a
+                                                :href="toUrl(item.href)"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
                                             >
-                                                <a
-                                                    :href="toUrl(item.href)"
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                >
-                                                    <span class="sr-only">{{
-                                                        item.title
-                                                    }}</span>
-                                                    <component
-                                                        :is="item.icon"
-                                                        class="size-5 opacity-80 group-hover:opacity-100"
-                                                    />
-                                                </a>
-                                            </Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                            <p>{{ item.title }}</p>
-                                        </TooltipContent>
-                                    </Tooltip>
-                                </TooltipProvider>
-                            </template>
-                        </div>
+                                                <span class="sr-only">{{
+                                                    item.title
+                                                }}</span>
+                                                <component
+                                                    :is="item.icon"
+                                                    class="size-5 opacity-80 group-hover:opacity-100"
+                                                />
+                                            </a>
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>{{ item.title }}</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+                        </template>
                     </div>
 
-                    <DropdownMenu>
+                    <DropdownMenu v-if="auth.user">
                         <DropdownMenuTrigger :as-child="true">
                             <Button
-                                variant="ghost"
+                                variant="outline"
                                 size="icon"
-                                class="relative size-10 w-auto rounded-full p-1 focus-within:ring-2 focus-within:ring-primary"
+                                class="relative size-10 cursor-pointer rounded-full p-1 focus-within:ring-2 focus-within:ring-primary"
                             >
-                                <Avatar
-                                    class="size-8 overflow-hidden rounded-full"
-                                >
-                                    <AvatarImage
-                                        v-if="auth.user.avatar"
-                                        :src="auth.user.avatar"
-                                        :alt="auth.user.name"
-                                    />
-                                    <AvatarFallback
-                                        class="rounded-lg bg-neutral-200 font-semibold text-black dark:bg-neutral-700 dark:text-white"
-                                    >
-                                        {{ getInitials(auth.user?.name) }}
-                                    </AvatarFallback>
-                                </Avatar>
+                                {{ getInitials(auth.user.name) }}
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" class="w-56">
                             <UserMenuContent :user="auth.user" />
                         </DropdownMenuContent>
                     </DropdownMenu>
+                    <Button as-child variant="outline" v-else>
+                        <Link :href="login()">Login</Link>
+                    </Button>
                 </div>
             </div>
         </div>
