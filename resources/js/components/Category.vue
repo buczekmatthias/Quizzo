@@ -3,9 +3,11 @@ import { Link } from '@inertiajs/vue3';
 import { Button } from '@/components/ui/button';
 import type { Category } from '@/types';
 
-defineProps<{
+type Props = {
     category: Category;
-}>();
+};
+
+defineProps<Props>();
 </script>
 
 <template>

@@ -2,16 +2,15 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
-withDefaults(
-    defineProps<{
-        count?: number;
-        containerClass?: string;
-        skeletonClass?: string;
-    }>(),
-    {
-        count: () => 8,
-    },
-);
+type Props = {
+    count?: number;
+    containerClass?: string;
+    skeletonClass?: string;
+};
+
+withDefaults(defineProps<Props>(), {
+    count: () => 8,
+});
 </script>
 
 <template>

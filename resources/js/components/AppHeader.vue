@@ -54,6 +54,14 @@ const activeItemStyles =
     'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100';
 
 const navigation: Navigation = useAppNavigation();
+
+const crumbs: BreadcrumbItem[] = [
+    {
+        title: 'Home',
+        href: home().url,
+    },
+    ...props.breadcrumbs,
+];
 </script>
 
 <template>
@@ -234,13 +242,13 @@ const navigation: Navigation = useAppNavigation();
         </div>
 
         <div
-            v-if="props.breadcrumbs.length > 1"
+            v-if="crumbs.length > 1"
             class="flex w-full border-b border-sidebar-border/70"
         >
             <div
                 class="mx-auto flex h-12 w-full items-center justify-start px-4 text-neutral-500 md:max-w-7xl"
             >
-                <Breadcrumbs :breadcrumbs="breadcrumbs" />
+                <Breadcrumbs :breadcrumbs="crumbs" />
             </div>
         </div>
     </div>

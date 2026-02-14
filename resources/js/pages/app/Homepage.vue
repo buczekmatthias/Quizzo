@@ -7,9 +7,8 @@ import Skeleton from '@/components/Skeleton.vue';
 import { Button } from '@/components/ui/button';
 import { useCurrentUser } from '@/composables/useUser';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { home } from '@/routes';
+import quizes from '@/routes/quizes';
 import type { Category as CategoryType, Quiz as QuizType } from '@/types';
-import { type BreadcrumbItem } from '@/types';
 
 type Props = {
     favoriteCategories?: CategoryType[];
@@ -18,19 +17,12 @@ type Props = {
 };
 
 defineProps<Props>();
-
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Home',
-        href: home().url,
-    },
-];
 </script>
 
 <template>
     <Head title="Homepage" />
 
-    <AppLayout :breadcrumbs="breadcrumbs" class="gap-8">
+    <AppLayout class="gap-8">
         <template v-if="useCurrentUser.user">
             <div class="flex flex-col gap-2">
                 <Heading variant="small" title="Your favorite categories" />
@@ -78,6 +70,12 @@ const breadcrumbs: BreadcrumbItem[] = [
                             v-for="quiz in favoriteCategoriesQuizzes"
                             :key="quiz.slug"
                         />
+
+                        <Button as-child>
+                            <Link href="#" class="whitespace-nowrap">
+                                Show all
+                            </Link>
+                        </Button>
                     </template>
                 </Deferred>
             </div>
@@ -93,6 +91,12 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                 <template v-if="quizzes">
                     <Quiz :quiz v-for="quiz in quizzes" :key="quiz.slug" />
+
+                    <Button as-child>
+                        <Link :href="quizes.index()" class="whitespace-nowrap">
+                            Show all
+                        </Link>
+                    </Button>
                 </template>
             </Deferred>
         </div>

@@ -1,5 +1,6 @@
-import { Home, LayoutGrid } from 'lucide-vue-next';
+import { BadgeHelp, Home, LayoutGrid } from 'lucide-vue-next';
 import { dashboard, home } from '@/routes';
+import quizes from '@/routes/quizes';
 import type { Navigation } from '@/types';
 import { useCurrentUser } from './useUser';
 
@@ -10,6 +11,11 @@ export function useAppNavigation(): Navigation {
                 title: 'Homepage',
                 href: home(),
                 icon: Home,
+            },
+            {
+                title: 'Quizes',
+                href: quizes.index(),
+                icon: BadgeHelp,
             },
         ],
         footer: [],

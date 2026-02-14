@@ -15,7 +15,7 @@ withDefaults(defineProps<Props>(), {
 <template>
     <header
         :class="{
-            'mb-8 space-y-0.5': variant === 'default',
+            'mb-4 space-y-0.5': variant === 'default',
             truncate: truncate,
         }"
     >
