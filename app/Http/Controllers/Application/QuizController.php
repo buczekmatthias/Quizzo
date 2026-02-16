@@ -3,10 +3,18 @@
 namespace App\Http\Controllers\Application;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Quiz\SubmitQuizRequest;
 use App\Http\Resources\PaginatedContentResource;
+use App\Http\Resources\Quiz\AccessQuizResource;
 use App\Http\Resources\Quiz\BaseQuizResource;
+use App\Http\Resources\Quiz\QuestionResource;
+use App\Http\Resources\Quiz\ShowQuizResource;
+use App\Models\Answer;
 use App\Models\Quiz;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -21,6 +29,7 @@ class QuizController extends Controller
 			'paginatedQuizzes' => PaginatedContentResource::make(
 				Quiz::query()
 							->select(['slug', 'title', 'is_public', 'started_at', 'finished_at'])
+							->hasNotFinished()
 							->orderBy('started_at', 'DESC')
 							->orderBy('finished_at', 'DESC')
 							->orderBy('title', 'ASC')
@@ -31,51 +40,109 @@ class QuizController extends Controller
 		]);
 	}
 
-	/**
-	 * Show the form for creating a new resource.
-	 */
 	public function create()
 	{
-		//
+	}
+
+	public function store()
+	{
 	}
 
 	/**
 	 * Store a newly created resource in storage.
 	 */
-	public function store(Request $request)
+	public function submit(SubmitQuizRequest $request, Quiz $quiz, ?string $token = null): RedirectResponse
 	{
-		//
+		Gate::authorize('view', [$quiz, $token]);
+
+		$data = $request->validated();
+
+		DB::transaction(function () use ($quiz, $data) {
+			$answers = Answer::select(['id'])->whereIn(
+				'slug',
+				collect($data['questions'])->pluck('answer_selected_slug')->filter(fn ($s) => $s !== null)
+			)->get();
+
+			request()->user()->answers()->attach($answers);
+
+			$now = now();
+			$quiz->participants()->attach(request()->user(), ['created_at' => $now, 'updated_at' => $now]);
+		});
+
+		return back();
 	}
 
 	/**
 	 * Display the specified resource.
 	 */
-	public function show(string $id)
+	public function show(Quiz $quiz, ?string $token = null): Response | RedirectResponse
 	{
-		//
+		if (!Auth::check()) {
+			session(['redirect_to' => route('quizzes.show', ['quiz' => $quiz->slug, 'token' => $token])]);
+
+			return to_route('login');
+		}
+
+		if (!$quiz->is_public && !$token) {
+			return Inertia::render('app/quiz/AccessQuiz', [
+				'quiz' => AccessQuizResource::make($quiz)
+			]);
+		}
+
+		Gate::authorize('view', [$quiz, $token]);
+
+		$answersColumns = match ($quiz->finished_at?->isPast()) {
+			true => 'id,slug,content,is_content_file_type,is_correct_answer,question_id',
+			default => 'id,slug,content,is_content_file_type,question_id'
+		};
+
+		$relationships = [
+			"answers:{$answersColumns}"
+		];
+
+		$hasUserFinishedQuiz = $quiz->participants()->where('user_id', request()->user()->id)->exists();
+
+		if ($hasUserFinishedQuiz) {
+			$relationships = [
+				...$relationships,
+				'answers.users' => fn ($q) => $q
+					// ->select(['username'])
+					->where('users.id', request()->user()->id)
+			];
+		}
+
+		$questions = $quiz
+						->questions()
+						->select(['id', 'slug', 'content', 'image'])
+						->with($relationships)
+						->orderBy('id', 'asc')
+						->get();
+
+		return Inertia::render('app/quiz/Show', [
+			'quiz' => ShowQuizResource::make($quiz)
+				->additional(['did_user_do' => $hasUserFinishedQuiz])
+				->toArray(request()),
+			'questions' => Inertia::defer(
+				fn () => $questions->map(
+					fn ($question) => QuestionResource::make($question)
+						->additional(['has_finished' => $quiz->finished_at?->isPast()])
+						->toArray(request())
+				)
+			),
+			'permissions' => [
+				'finish' => request()->user()->can('update', $quiz)
+			]
+		]);
 	}
 
-	/**
-	 * Show the form for editing the specified resource.
-	 */
-	public function edit(string $id)
+	public function update(Quiz $quiz, ?string $token = null): RedirectResponse
 	{
-		//
-	}
+		Gate::authorize('update', $quiz);
 
-	/**
-	 * Update the specified resource in storage.
-	 */
-	public function update(Request $request, string $id)
-	{
-		//
-	}
+		$quiz->update([
+			'finished_at' => now()
+		]);
 
-	/**
-	 * Remove the specified resource from storage.
-	 */
-	public function destroy(string $id)
-	{
-		//
+		return back(status: 303);
 	}
 }

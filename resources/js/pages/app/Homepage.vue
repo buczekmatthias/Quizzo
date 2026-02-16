@@ -7,13 +7,13 @@ import Skeleton from '@/components/Skeleton.vue';
 import { Button } from '@/components/ui/button';
 import { useCurrentUser } from '@/composables/useUser';
 import AppLayout from '@/layouts/AppLayout.vue';
-import quizes from '@/routes/quizes';
+import quizzes from '@/routes/quizzes';
 import type { Category as CategoryType, Quiz as QuizType } from '@/types';
 
 type Props = {
     favoriteCategories?: CategoryType[];
     favoriteCategoriesQuizzes?: QuizType[];
-    quizzes?: QuizType[];
+    selectedQuizzes?: QuizType[];
 };
 
 defineProps<Props>();
@@ -37,18 +37,23 @@ defineProps<Props>();
                     </template>
 
                     <template v-if="favoriteCategories">
-                        <div class="flex flex-wrap items-center gap-3">
-                            <Category
-                                :category
-                                v-for="category in favoriteCategories"
-                                :key="category.slug"
-                            />
-                            <Button as-child>
-                                <Link href="#" class="whitespace-nowrap">
-                                    Show all
-                                </Link>
-                            </Button>
-                        </div>
+                        <template v-if="favoriteCategories.length > 0">
+                            <div class="flex flex-wrap items-center gap-3">
+                                <Category
+                                    :category
+                                    v-for="category in favoriteCategories"
+                                    :key="category.slug"
+                                />
+                                <Button as-child>
+                                    <Link href="#" class="whitespace-nowrap">
+                                        Show all
+                                    </Link>
+                                </Button>
+                            </div>
+                        </template>
+                        <p class="text-muted-foreground italic" v-else>
+                            Nothing to show
+                        </p>
                     </template>
                 </Deferred>
             </div>
@@ -65,17 +70,22 @@ defineProps<Props>();
                     </template>
 
                     <template v-if="favoriteCategoriesQuizzes">
-                        <Quiz
-                            :quiz
-                            v-for="quiz in favoriteCategoriesQuizzes"
-                            :key="quiz.slug"
-                        />
+                        <template v-if="favoriteCategoriesQuizzes.length > 0">
+                            <Quiz
+                                :quiz
+                                v-for="quiz in favoriteCategoriesQuizzes"
+                                :key="quiz.slug"
+                            />
 
-                        <Button as-child>
-                            <Link href="#" class="whitespace-nowrap">
-                                Show all
-                            </Link>
-                        </Button>
+                            <Button as-child>
+                                <Link href="#" class="whitespace-nowrap">
+                                    Show all
+                                </Link>
+                            </Button>
+                        </template>
+                        <p class="text-muted-foreground italic" v-else>
+                            Nothing to show
+                        </p>
                     </template>
                 </Deferred>
             </div>
@@ -84,16 +94,20 @@ defineProps<Props>();
         <div class="flex flex-col gap-2">
             <Heading variant="small" title="Quizzes" />
 
-            <Deferred data="quizzes">
+            <Deferred data="selectedQuizzes">
                 <template #fallback>
                     <Skeleton />
                 </template>
 
-                <template v-if="quizzes">
-                    <Quiz :quiz v-for="quiz in quizzes" :key="quiz.slug" />
+                <template v-if="selectedQuizzes">
+                    <Quiz
+                        :quiz
+                        v-for="quiz in selectedQuizzes"
+                        :key="quiz.slug"
+                    />
 
                     <Button as-child>
-                        <Link :href="quizes.index()" class="whitespace-nowrap">
+                        <Link :href="quizzes.index()" class="whitespace-nowrap">
                             Show all
                         </Link>
                     </Button>

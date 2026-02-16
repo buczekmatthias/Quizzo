@@ -48,6 +48,7 @@ class HomepageController extends Controller
 												->where('user_id', request()->user()->id)
 										)
 								)
+								->hasNotFinished()
 								->limit(10)
 								->get()
 						),
@@ -55,10 +56,11 @@ class HomepageController extends Controller
 					),
 				]
 			},
-			'quizzes' => Inertia::defer(
+			'selectedQuizzes' => Inertia::defer(
 				fn () => BaseQuizResource::collection(
 					Quiz::query()
 						->select(['slug', 'title', 'is_public', 'started_at', 'finished_at'])
+						->hasNotFinished()
 						->orderBy('started_at', 'DESC')
 						->orderBy('finished_at', 'DESC')
 						->orderBy('title', 'ASC')

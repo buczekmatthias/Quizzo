@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { Calendar, CalendarOff, Lock } from 'lucide-vue-next';
+import { Calendar, CalendarOff } from 'lucide-vue-next';
 import Heading from '@/components/Heading.vue';
+import QuizAccessBadge from '@/components/QuizAccessBadge.vue';
 import TextLink from '@/components/TextLink.vue';
+import quizzes from '@/routes/quizzes';
 import type { Quiz } from '@/types';
 
 type Props = {
@@ -13,13 +15,7 @@ defineProps<Props>();
 
 <template>
     <div class="flex flex-col gap-5 rounded-md border p-3">
-        <div
-            class="flex items-center gap-2 self-start rounded-md bg-red-700/10 p-2 text-red-600 dark:bg-sky-700/10 dark:text-sky-400"
-            v-if="!quiz.is_public"
-        >
-            <Lock class="size-4 shrink-0 md:size-5" />
-            <p class="text-sm">Access token required</p>
-        </div>
+        <QuizAccessBadge v-if="!quiz.is_public" />
         <Heading variant="small" :title="quiz.title" truncate />
         <div class="flex flex-wrap gap-4">
             <div class="flex items-center gap-2">
@@ -38,6 +34,8 @@ defineProps<Props>();
                 </p>
             </div>
         </div>
-        <TextLink href="#" class="self-start">Take a quiz</TextLink>
+        <TextLink :href="quizzes.show({ quiz })" class="self-start">
+            Take a quiz
+        </TextLink>
     </div>
 </template>

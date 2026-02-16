@@ -21,7 +21,15 @@ class FortifyServiceProvider extends ServiceProvider
 	 */
 	public function register(): void
 	{
-		//
+		$this->app->instance(
+			LoginResponse::class,
+			new class implements LoginResponse {
+				public function toResponse($request)
+				{
+					return redirect(session('redirect_to', '/'));
+				}
+			}
+		);
 	}
 
 	/**
@@ -32,16 +40,6 @@ class FortifyServiceProvider extends ServiceProvider
 		$this->configureActions();
 		$this->configureViews();
 		$this->configureRateLimiting();
-
-		$this->app->instance(
-			LoginResponse::class,
-			new class implements LoginResponse {
-				public function toResponse($request)
-				{
-					return redirect(session('redirect_to', '/'));
-				}
-			}
-		);
 	}
 
 	/**

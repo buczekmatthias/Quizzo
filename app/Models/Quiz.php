@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -55,5 +56,15 @@ class Quiz extends Model
 	public function categories(): BelongsToMany
 	{
 		return $this->belongsToMany(Category::class, 'category_quiz');
+	}
+
+	public function scopeHasNotFinished(Builder $query): Builder
+	{
+		return $query
+			->where(
+				fn (Builder $query) => $query
+					->whereNull('finished_at')
+					->orWhere('finished_at', '>', now())
+			);
 	}
 }

@@ -7,8 +7,10 @@ use Inertia\Inertia;
 
 Route::get('/', HomepageController::class)->name('home');
 
-Route::resource('quizes', QuizController::class)->except(['show']);
-Route::get('/quizes/{quiz}/{token?}', [QuizController::class, 'show'])->name('quizes.show');
+Route::resource('quizzes', QuizController::class)->only(['index', 'create', 'store']);
+Route::get('/quizzes/{quiz}/{token?}', [QuizController::class, 'show'])->name('quizzes.show');
+Route::post('/quizzes/{quiz}/{token?}', [QuizController::class, 'submit'])->name('quizzes.submit');
+Route::patch('/quizzes/{quiz}/{token?}', [QuizController::class, 'update'])->name('quizzes.update');
 
 Route::get('dashboard', function () {
 	return Inertia::render('Dashboard');

@@ -5,7 +5,7 @@ namespace App\Http\Resources\Quiz;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class BaseQuizResource extends JsonResource
+class AccessQuizResource extends JsonResource
 {
 	/**
 	 * Transform the resource into an array.
@@ -17,10 +17,7 @@ class BaseQuizResource extends JsonResource
 		return [
 			'slug' => $this->slug,
 			'title' => $this->title,
-			'is_public' => $this->is_public,
-			'started_at' => $this->started_at->format('d/m/Y - H:i'),
-			'finished_at' => $this->finished_at?->format('d/m/Y - H:i'),
-			'has_finished' => $this->finished_at?->isPast()
+			'description' => $this->description
 		];
 	}
 }
