@@ -136,13 +136,12 @@ watch(
                     :description="quiz.finished_at ?? 'Not proivded'"
                 />
             </div>
-            <div class="flex gap-2">
+            <div class="flex gap-2" v-if="quizScore">
                 <Percent class="mt-1 size-4 md:size-5" />
                 <Heading
                     variant="small"
                     title="Score"
                     :description="scoreString"
-                    v-if="quizScore"
                 />
             </div>
 

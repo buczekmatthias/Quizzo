@@ -1,5 +1,6 @@
-import { BadgeHelp, Home, LayoutGrid, Plus } from 'lucide-vue-next';
+import { BadgeHelp, FolderOpen, Home, LayoutGrid, Plus } from 'lucide-vue-next';
 import { dashboard, home } from '@/routes';
+import categories from '@/routes/categories';
 import quizzes from '@/routes/quizzes';
 import type { Navigation } from '@/types';
 import { useCurrentUser } from './useUser';
@@ -16,6 +17,11 @@ export function useAppNavigation(): Navigation {
                 title: 'Quizzes',
                 href: quizzes.index(),
                 icon: BadgeHelp,
+            },
+            {
+                title: 'Categories',
+                href: categories.index(),
+                icon: FolderOpen,
             },
         ],
         footer: [],
