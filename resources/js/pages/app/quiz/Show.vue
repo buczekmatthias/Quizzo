@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Deferred, Head, Link, useForm } from '@inertiajs/vue3';
-import { Calendar, CalendarOff } from 'lucide-vue-next';
-import { watch } from 'vue';
+import { Calendar, CalendarOff, Percent } from 'lucide-vue-next';
+import { computed, watch } from 'vue';
 import ActionButton from '@/components/ActionButton.vue';
 import Heading from '@/components/Heading.vue';
 import QuizAccessBadge from '@/components/QuizAccessBadge.vue';
@@ -12,7 +12,13 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import AppLayout from '@/layouts/AppLayout.vue';
 import quizzes from '@/routes/quizzes';
-import type { Permissions, Question, Quiz, QuizFormQuestion } from '@/types';
+import type {
+    Answer,
+    Permissions,
+    Question,
+    Quiz,
+    QuizFormQuestion,
+} from '@/types';
 import { type BreadcrumbItem } from '@/types';
 
 type Props = {
@@ -53,6 +59,32 @@ const submitForm = () => {
         );
     }
 };
+
+const quizScore = computed((): number | null => {
+    if (!props.questions || props.quiz.can_be_done) return null;
+
+    let score = 0;
+
+    props.questions.forEach((question: Question) => {
+        if (
+            question.answers.some(
+                (answer: Answer) =>
+                    answer.is_correct_answer &&
+                    answer.has_user_select_this_answer,
+            )
+        ) {
+            score++;
+        }
+    });
+
+    return score;
+});
+
+const scoreString = computed((): string => {
+    const percent = (quizScore.value! / props.questions!.length) * 100;
+
+    return `${quizScore.value}/${props.questions?.length} - ${percent}%`;
+});
 
 watch(
     () => props.questions,
@@ -102,6 +134,15 @@ watch(
                     variant="small"
                     title="Finished at"
                     :description="quiz.finished_at ?? 'Not proivded'"
+                />
+            </div>
+            <div class="flex gap-2">
+                <Percent class="mt-1 size-4 md:size-5" />
+                <Heading
+                    variant="small"
+                    title="Score"
+                    :description="scoreString"
+                    v-if="quizScore"
                 />
             </div>
 

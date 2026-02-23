@@ -4,6 +4,7 @@ namespace App\Http\Resources\Quiz;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class QuestionResource extends JsonResource
 {
@@ -22,7 +23,7 @@ class QuestionResource extends JsonResource
 			'has_image' => $hasImage,
 			'image' => $this->when(
 				$hasImage,
-				asset($this->image),
+				Storage::url($this->image),
 				null
 			),
 			'answers' => $this->answers->map(

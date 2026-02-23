@@ -27,13 +27,17 @@ class QuizPolicy
 	/**
 	 * Determine whether the user can update the model.
 	 */
-	public function update(User $user, Quiz $quiz): bool
+	public function update(User $user, Quiz $quiz, ?string $token): bool
 	{
+		if (!$this->view($user, $quiz, $token)) {
+			return false;
+		}
+
 		if ($user->role !== UserRole::USER) {
 			return true;
 		}
 
-		return $quiz->user_id === $user->id;
+		return !$quiz->finished_at?->isPast() && $quiz->user_id === $user->id;
 	}
 
 	/**

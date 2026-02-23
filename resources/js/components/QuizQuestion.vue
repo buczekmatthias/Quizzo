@@ -20,6 +20,7 @@ const model = defineModel<string>();
             :src="question.image"
             alt="Question image"
             v-if="question.has_image"
+            class="max-h-80 object-contain"
         />
         <div class="grid gap-3 md:grid-cols-2">
             <QuestionAnswer

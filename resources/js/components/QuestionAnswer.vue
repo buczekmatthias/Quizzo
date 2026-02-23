@@ -44,7 +44,12 @@ const selectAnswer = () => {
         <p v-if="!answer.is_content_file_type">
             {{ answer.content }}
         </p>
-        <img :src="answer.content" alt="" v-else />
+        <img
+            :src="answer.content"
+            alt=""
+            class="max-h-80 object-contain"
+            v-else
+        />
 
         <template v-if="disabled">
             <p v-if="answer.has_user_select_this_answer" class="text-sky-400">

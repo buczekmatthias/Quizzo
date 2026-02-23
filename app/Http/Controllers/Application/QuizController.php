@@ -15,6 +15,7 @@ use App\Models\Category;
 use App\Models\Quiz;
 use App\Services\QuizTokenGenerator;
 use Carbon\Carbon;
+use GuzzleHttp\Middleware;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -26,6 +27,13 @@ use Inertia\Response;
 
 class QuizController extends Controller
 {
+	public static function middleware(): array
+	{
+		return [
+			new Middleware('auth', except: ['index', 'show'])
+		];
+	}
+
 	/**
 	 * Display a listing of the resource.
 	 */
@@ -170,7 +178,6 @@ class QuizController extends Controller
 
 		Gate::authorize('view', [$quiz, $token]);
 
-		// TODO: Count correct answers and give score
 		$answersColumns = match ($quiz->finished_at?->isPast()) {
 			true => 'id,slug,content,is_content_file_type,is_correct_answer,question_id',
 			default => 'id,slug,content,is_content_file_type,question_id'
@@ -210,14 +217,14 @@ class QuizController extends Controller
 				)
 			),
 			'permissions' => [
-				'finish' => request()->user()->can('update', $quiz)
+				'finish' => request()->user()->can('update', [$quiz, $token])
 			]
 		]);
 	}
 
 	public function update(Quiz $quiz, ?string $token = null): RedirectResponse
 	{
-		Gate::authorize('update', $quiz);
+		Gate::authorize('update', [$quiz, $token]);
 
 		$quiz->update([
 			'finished_at' => now()
