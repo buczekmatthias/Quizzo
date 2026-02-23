@@ -15,7 +15,6 @@ class QuestionResource extends JsonResource
 	public function toArray(Request $request): array
 	{
 		$hasImage = !is_null($this->image);
-		$question_path = "questions/{$this->slug}";
 
 		return [
 			'slug' => $this->slug,
@@ -23,19 +22,15 @@ class QuestionResource extends JsonResource
 			'has_image' => $hasImage,
 			'image' => $this->when(
 				$hasImage,
-				asset("{$question_path}/{$this->image}"),
+				asset($this->image),
 				null
 			),
 			'answers' => $this->answers->map(
-				fn ($answer) => (
-					$this->when(
-						$this->additional['has_finished'],
-						AnswerWithCorrectAnswerResource::make($answer),
-						AnswerResource::make($answer)
-					)
+				fn ($answer) => $this->when(
+					$this->additional['has_finished'],
+					AnswerWithCorrectAnswerResource::make($answer),
+					AnswerResource::make($answer)
 				)
-					->additional(['question_path' => $question_path])
-					->toArray($request)
 			),
 		];
 	}

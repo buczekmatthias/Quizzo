@@ -34,7 +34,7 @@ export type Pagination = {
 export type Category = {
     slug: string;
     name: string;
-    is_favorite: boolean;
+    is_favorite?: boolean;
 };
 
 export type Quiz = {

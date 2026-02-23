@@ -17,7 +17,7 @@ class AnswerResource extends JsonResource
 		return [
 			'slug' => $this->slug,
 			'content' => $this->is_content_file_type
-				? asset("{$this->additional['question_path']}/{$this->content}")
+				? asset($this->content)
 				: $this->content,
 			'is_content_file_type' => $this->is_content_file_type,
 			'has_user_select_this_answer' => $this->whenLoaded(
