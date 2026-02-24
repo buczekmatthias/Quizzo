@@ -5,19 +5,30 @@ import Heading from '@/components/Heading.vue';
 import PaginatedContent from '@/components/PaginatedContent.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import categories from '@/routes/categories';
-import type { Category as CategoryType, Pagination } from '@/types';
+import type {
+    BreadcrumbItem,
+    Category as CategoryType,
+    Pagination,
+} from '@/types';
 
 type Props = {
     paginatedCategories: Pagination & { data: CategoryType[] };
 };
 
 defineProps<Props>();
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Categories',
+        href: categories.index().url,
+    },
+];
 </script>
 
 <template>
     <Head title="Homepage" />
 
-    <AppLayout class="gap-8">
+    <AppLayout class="gap-8" :breadcrumbs>
         <PaginatedContent :pagination="paginatedCategories">
             <Link
                 :href="categories.show(category)"

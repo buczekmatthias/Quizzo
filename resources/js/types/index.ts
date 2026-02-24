@@ -49,6 +49,7 @@ export type Quiz = {
     can_be_done: boolean;
     did_user_do: boolean;
     token: string;
+    categories: Category[];
 };
 
 export type PaginatedQuiz = Pagination & { data: Quiz[] };

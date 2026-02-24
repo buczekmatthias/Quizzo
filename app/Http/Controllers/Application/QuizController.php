@@ -178,6 +178,8 @@ class QuizController extends Controller
 
 		Gate::authorize('view', [$quiz, $token]);
 
+		$quiz->load(['categories:slug,name']);
+
 		$answersColumns = match ($quiz->finished_at?->isPast()) {
 			true => 'id,slug,content,is_content_file_type,is_correct_answer,question_id',
 			default => 'id,slug,content,is_content_file_type,question_id'

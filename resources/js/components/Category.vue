@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 import { Button } from '@/components/ui/button';
+import categories from '@/routes/categories';
 import type { Category } from '@/types';
 
 type Props = {
@@ -12,7 +13,7 @@ defineProps<Props>();
 
 <template>
     <Button as-child variant="outline">
-        <Link href="#">
+        <Link :href="categories.show(category)">
             {{ category.name }}
         </Link>
     </Button>

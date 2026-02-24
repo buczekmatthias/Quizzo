@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class Quiz extends Model
 {
@@ -66,5 +68,22 @@ class Quiz extends Model
 					->whereNull('finished_at')
 					->orWhere('finished_at', '>', now())
 			);
+	}
+
+	public function scopeUserFavorite(Builder $query): Builder
+	{
+		return $query
+			->select(['slug', 'title', 'is_public', 'started_at', 'finished_at'])
+			->whereHas(
+				'categories',
+				fn ($query) => $query
+					->whereIn(
+						'categories.id',
+						DB::table('category_user')
+							->select(['category_id'])
+							->where('user_id', Auth::user()->id)
+					)
+			)
+			->hasNotFinished();
 	}
 }

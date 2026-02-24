@@ -9,20 +9,35 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import AppLayout from '@/layouts/AppLayout.vue';
 import categories from '@/routes/categories';
-import type { Category as CategoryType, PaginatedQuiz } from '@/types';
+import type {
+    BreadcrumbItem,
+    Category as CategoryType,
+    PaginatedQuiz,
+} from '@/types';
 
 type Props = {
     category: CategoryType;
     quizzes?: PaginatedQuiz;
 };
 
-defineProps<Props>();
+const props = defineProps<Props>();
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Categories',
+        href: categories.index().url,
+    },
+    {
+        title: 'View category',
+        href: categories.show(props.category).url,
+    },
+];
 </script>
 
 <template>
     <Head title="Homepage" />
 
-    <AppLayout class="gap-6">
+    <AppLayout class="gap-6" :breadcrumbs>
         <Button variant="outline" as-child class="self-start">
             <Link :href="categories.index()">
                 <ArrowLeft />

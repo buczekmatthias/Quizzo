@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Quiz;
 
+use App\Http\Resources\Category\BaseCategoryResource;
 use Illuminate\Http\Request;
 
 class ShowQuizResource extends BaseQuizResource
@@ -21,6 +22,10 @@ class ShowQuizResource extends BaseQuizResource
 			'token' => $this->when(
 				!is_null($this->token),
 				$this->token
+			),
+			'categories' => $this->whenLoaded(
+				'categories',
+				BaseCategoryResource::collection($this->categories)
 			)
 		];
 	}

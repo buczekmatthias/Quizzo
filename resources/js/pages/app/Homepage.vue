@@ -7,6 +7,7 @@ import Skeleton from '@/components/Skeleton.vue';
 import { Button } from '@/components/ui/button';
 import { useCurrentUser } from '@/composables/useUser';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { profile } from '@/routes';
 import quizzes from '@/routes/quizzes';
 import type { Category as CategoryType, Quiz as QuizType } from '@/types';
 
@@ -45,7 +46,10 @@ defineProps<Props>();
                                     :key="category.slug"
                                 />
                                 <Button as-child>
-                                    <Link href="#" class="whitespace-nowrap">
+                                    <Link
+                                        :href="profile()"
+                                        class="whitespace-nowrap"
+                                    >
                                         Show all
                                     </Link>
                                 </Button>
@@ -78,7 +82,10 @@ defineProps<Props>();
                             />
 
                             <Button as-child>
-                                <Link href="#" class="whitespace-nowrap">
+                                <Link
+                                    :href="profile()"
+                                    class="whitespace-nowrap"
+                                >
                                     Show all
                                 </Link>
                             </Button>

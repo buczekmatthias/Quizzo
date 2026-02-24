@@ -3,6 +3,7 @@ import { Deferred, Head, Link, useForm } from '@inertiajs/vue3';
 import { Calendar, CalendarOff, Percent } from 'lucide-vue-next';
 import { computed, watch } from 'vue';
 import ActionButton from '@/components/ActionButton.vue';
+import Category from '@/components/Category.vue';
 import Heading from '@/components/Heading.vue';
 import QuizAccessBadge from '@/components/QuizAccessBadge.vue';
 import QuizFinishedBadge from '@/components/QuizFinishedBadge.vue';
@@ -109,11 +110,22 @@ watch(
     <Head :title="quiz.title" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex flex-wrap gap-4 self-start">
+        <div
+            class="flex flex-wrap gap-4 self-start"
+            v-if="!quiz.is_public || !quiz.can_be_done"
+        >
             <QuizAccessBadge v-if="!quiz.is_public" />
             <QuizFinishedBadge
                 v-if="!quiz.can_be_done"
                 :label="quiz.did_user_do ? 'Quiz done' : 'Quiz ended'"
+            />
+        </div>
+
+        <div class="flex flex-wrap gap-2" v-if="quiz.categories.length > 0">
+            <Category
+                :category
+                v-for="category in quiz.categories"
+                :key="category.slug"
             />
         </div>
 

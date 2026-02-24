@@ -2,11 +2,14 @@
 
 use App\Http\Controllers\Application\CategoryController;
 use App\Http\Controllers\Application\HomepageController;
+use App\Http\Controllers\Application\ProfileController;
 use App\Http\Controllers\Application\QuizController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', HomepageController::class)->name('home');
+
+Route::get('/profile', ProfileController::class)->name('profile')->middleware(['auth']);
 
 Route::resource('quizzes', QuizController::class)->only(['index', 'create', 'store']);
 Route::get('/quizzes/{quiz}/{token?}', [QuizController::class, 'show'])->name('quizzes.show');

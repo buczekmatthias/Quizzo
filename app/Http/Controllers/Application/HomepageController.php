@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Category\BaseCategoryResource;
 use App\Http\Resources\Quiz\BaseQuizResource;
 use App\Models\Quiz;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -37,18 +36,7 @@ class HomepageController extends Controller
 					'favoriteCategoriesQuizzes' => Inertia::defer(
 						fn () => BaseQuizResource::collection(
 							Quiz::query()
-								->select(['slug', 'title', 'is_public', 'started_at', 'finished_at'])
-								->whereHas(
-									'categories',
-									fn ($query) => $query
-										->whereIn(
-											'categories.id',
-											DB::table('category_user')
-												->select(['category_id'])
-												->where('user_id', request()->user()->id)
-										)
-								)
-								->hasNotFinished()
+								->userFavorite()
 								->limit(10)
 								->get()
 						),
