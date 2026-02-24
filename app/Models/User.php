@@ -82,4 +82,20 @@ class User extends Authenticatable
 	{
 		return $this->belongsToMany(Category::class, 'category_user');
 	}
+
+	public function isStaff(): bool
+	{
+		return in_array(
+			$this->role,
+			[
+				UserRole::MOD,
+				UserRole::ADMIN
+			]
+		);
+	}
+
+	public function isAdmin(): bool
+	{
+		return $this->role === UserRole::ADMIN;
+	}
 }

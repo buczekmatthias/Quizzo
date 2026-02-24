@@ -5,7 +5,6 @@ use App\Http\Controllers\Application\HomepageController;
 use App\Http\Controllers\Application\ProfileController;
 use App\Http\Controllers\Application\QuizController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::get('/', HomepageController::class)->name('home');
 
@@ -19,8 +18,6 @@ Route::patch('/quizzes/{quiz}/{token?}', [QuizController::class, 'update'])->nam
 Route::resource('categories', CategoryController::class)->only(['index', 'show']);
 Route::patch('/categories/{category}/favorite', [CategoryController::class, 'toggleFavorite'])->name('categories.favorite')->middleware(['auth']);
 
-Route::get('dashboard', function () {
-	return Inertia::render('Dashboard');
-})->middleware(['auth'])->name('dashboard');
+require __DIR__.'/admin.php';
 
 require __DIR__.'/settings.php';
