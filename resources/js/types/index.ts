@@ -50,6 +50,7 @@ export type Quiz = {
     did_user_do: boolean;
     token: string;
     categories: Category[];
+    deleted_at: string;
 };
 
 export type PaginatedQuiz = Pagination & { data: Quiz[] };
@@ -60,6 +61,11 @@ export type Question = {
     has_image: boolean;
     image: string;
     answers: Answer[];
+};
+
+export type QuestionWithQuiz = Question & {
+    answers_count: number;
+    quiz: Quiz;
 };
 
 export type Answer = {

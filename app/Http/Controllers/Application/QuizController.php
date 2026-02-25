@@ -219,7 +219,10 @@ class QuizController extends Controller
 				)
 			),
 			'permissions' => [
-				'finish' => request()->user()->can('update', [$quiz, $token])
+				'finish' => request()->user()->can('update', [$quiz, $token]),
+				'delete' => request()->user()->can('delete', [$quiz, $token]),
+				'restore' => request()->user()->can('restore', [$quiz, $token]),
+				'forceDelete' => request()->user()->can('forceDelete', [$quiz, $token]),
 			]
 		]);
 	}

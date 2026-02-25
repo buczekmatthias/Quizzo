@@ -45,7 +45,7 @@ class QuizPolicy
 	 */
 	public function delete(User $user, Quiz $quiz): bool
 	{
-		return false;
+		return $user->isStaff();
 	}
 
 	/**
@@ -53,7 +53,7 @@ class QuizPolicy
 	 */
 	public function restore(User $user, Quiz $quiz): bool
 	{
-		return false;
+		return $user->isAdmin();
 	}
 
 	/**
@@ -61,6 +61,6 @@ class QuizPolicy
 	 */
 	public function forceDelete(User $user, Quiz $quiz): bool
 	{
-		return false;
+		return $user->isAdmin();
 	}
 }

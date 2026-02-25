@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { Head, InfiniteScroll, router } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 import { Check } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 import ExternalTextLink from '@/components/ExternalTextLink.vue';
+import PaginatedContent from '@/components/PaginatedContent.vue';
 import Switch from '@/components/Switch.vue';
 import Table from '@/components/Table.vue';
 import TextLink from '@/components/TextLink.vue';
@@ -57,7 +58,6 @@ watch(
         router.reload({
             data: { onlyCorrectAnswers: onlyCorrectAnswers.value },
             only: ['answers'],
-            reset: ['answers'],
         });
     },
 );
@@ -68,14 +68,13 @@ watch(
         router.reload({
             data: { onlyFileAnswers: onlyFileAnswers.value },
             only: ['answers'],
-            reset: ['answers'],
         });
     },
 );
 </script>
 
 <template>
-    <Head title="Dashboard" />
+    <Head title="Answers" />
 
     <AdminLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-wrap gap-6">
@@ -90,7 +89,7 @@ watch(
                 label="Show answers with file content"
             />
         </div>
-        <InfiniteScroll data="answers" preserve-url>
+        <PaginatedContent :pagination="answers" preserve-scroll>
             <Table :headers>
                 <TableRow v-for="answer in answers.data" :key="answer.slug">
                     <TableCell>
@@ -130,11 +129,6 @@ watch(
                     </TableCell>
                 </TableRow>
             </Table>
-            <template #loading>
-                <TableRow>
-                    <TableCell>Loading more answers...</TableCell>
-                </TableRow>
-            </template>
-        </InfiniteScroll>
+        </PaginatedContent>
     </AdminLayout>
 </template>

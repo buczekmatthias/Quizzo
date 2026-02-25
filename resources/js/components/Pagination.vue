@@ -10,6 +10,7 @@ const props = withDefaults(
         pagination: Pagination;
         pageName?: string;
         reloadOnly?: string[];
+        preserveScroll: boolean;
     }>(),
     {
         pageName: () => 'page',
@@ -36,7 +37,11 @@ const rangeString = computed(
                     as-child
                     :disabled="!pagination.links.prev"
                 >
-                    <Link :href="pagination.links.prev || ''" as="button">
+                    <Link
+                        :href="pagination.links.prev || ''"
+                        as="button"
+                        :preserve-scroll
+                    >
                         <ChevronLeft />
                     </Link>
                 </Button>
@@ -45,7 +50,11 @@ const rangeString = computed(
                     variant="outline"
                     :disabled="!pagination.links.next"
                 >
-                    <Link :href="pagination.links.next || ''" as="button">
+                    <Link
+                        :href="pagination.links.next || ''"
+                        as="button"
+                        :preserve-scroll
+                    >
                         <ChevronRight />
                     </Link>
                 </Button>

@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import admin from '@/routes/admin';
 import type { BreadcrumbItem } from '@/types';
 
-withDefaults(
+const props = withDefaults(
     defineProps<{
         breadcrumbs?: BreadcrumbItem[];
     }>(),
@@ -11,6 +12,14 @@ withDefaults(
         breadcrumbs: () => [],
     },
 );
+
+const crumbs: BreadcrumbItem[] = [
+    {
+        title: 'Dashboard',
+        href: admin.dashboard().url,
+    },
+    ...props.breadcrumbs,
+];
 </script>
 
 <template>
@@ -20,7 +29,7 @@ withDefaults(
         <div class="flex items-center gap-2">
             <SidebarTrigger class="-ml-1" />
             <template v-if="breadcrumbs && breadcrumbs.length > 0">
-                <Breadcrumbs :breadcrumbs="breadcrumbs" />
+                <Breadcrumbs :breadcrumbs="crumbs" />
             </template>
         </div>
     </header>

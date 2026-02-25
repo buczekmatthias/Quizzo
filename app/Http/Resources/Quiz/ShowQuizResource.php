@@ -26,7 +26,8 @@ class ShowQuizResource extends BaseQuizResource
 			'categories' => $this->whenLoaded(
 				'categories',
 				BaseCategoryResource::collection($this->categories)
-			)
+			),
+			'deleted_at' => $this->deleted_at
 		];
 	}
 }

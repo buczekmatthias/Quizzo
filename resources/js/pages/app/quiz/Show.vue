@@ -12,6 +12,7 @@ import Skeleton from '@/components/Skeleton.vue';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import AppLayout from '@/layouts/AppLayout.vue';
+import admin from '@/routes/admin';
 import quizzes from '@/routes/quizzes';
 import type {
     Answer,
@@ -165,6 +166,29 @@ watch(
                     method="patch"
                 >
                     Finish quiz now
+                </Link>
+            </Button>
+            <Button
+                as-child
+                v-if="permissions.delete && !quiz.deleted_at"
+                variant="destructive"
+            >
+                <Link :href="admin.quizzes.destroy(quiz)" method="delete">
+                    Soft delete
+                </Link>
+            </Button>
+            <Button as-child v-if="permissions.restore && quiz.deleted_at">
+                <Link :href="admin.quizzes.destroy(quiz)" method="delete">
+                    Restore
+                </Link>
+            </Button>
+            <Button
+                as-child
+                v-if="permissions.forceDelete"
+                variant="destructive"
+            >
+                <Link :href="admin.quizzes.destroy(quiz)" method="delete">
+                    Force delete
                 </Link>
             </Button>
         </div>
