@@ -70,6 +70,10 @@ export type Answer = {
     is_correct_answer: boolean;
 };
 
+export type AnswerWithQuiz = Answer & {
+    quiz: Quiz;
+};
+
 export type QuizFormQuestion = {
     slug: string;
     answer_selected_slug: string;

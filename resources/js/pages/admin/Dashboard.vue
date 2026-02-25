@@ -2,7 +2,7 @@
 import { Head } from '@inertiajs/vue3';
 import Heading from '@/components/Heading.vue';
 import AdminLayout from '@/layouts/AdminLayout.vue';
-import { dashboard } from '@/routes';
+import admin from '@/routes/admin';
 import { type BreadcrumbItem } from '@/types';
 
 type Props = {
@@ -23,7 +23,7 @@ defineProps<Props>();
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
-        href: dashboard().url,
+        href: admin.dashboard().url,
     },
 ];
 </script>

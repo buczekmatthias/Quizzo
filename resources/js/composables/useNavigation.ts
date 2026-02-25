@@ -1,5 +1,16 @@
-import { BadgeHelp, FolderOpen, Home, LayoutGrid, Plus } from 'lucide-vue-next';
-import { dashboard, home } from '@/routes';
+import {
+    BadgeHelp,
+    BadgeInfo,
+    FileQuestion,
+    FolderOpen,
+    Folders,
+    Home,
+    LayoutGrid,
+    Plus,
+    User,
+} from 'lucide-vue-next';
+import { home } from '@/routes';
+import admin from '@/routes/admin';
 import categories from '@/routes/categories';
 import quizzes from '@/routes/quizzes';
 import type { Navigation } from '@/types';
@@ -38,7 +49,7 @@ export function useAppNavigation(): Navigation {
     if (useCurrentUser.value.hasSpecialPermissions) {
         links.footer.push({
             title: 'Dashboard',
-            href: dashboard(),
+            href: admin.dashboard(),
             icon: LayoutGrid,
         });
     }
@@ -51,8 +62,33 @@ export function useAdminNavigation(): Navigation {
         main: [
             {
                 title: 'Dashboard',
-                href: dashboard(),
+                href: admin.dashboard(),
                 icon: LayoutGrid,
+            },
+            {
+                title: 'Categories',
+                href: admin.categories.index(),
+                icon: FolderOpen,
+            },
+            {
+                title: 'Users',
+                href: admin.users.index(),
+                icon: User,
+            },
+            {
+                title: 'Quizzes',
+                href: admin.quizzes.index(),
+                icon: Folders,
+            },
+            {
+                title: 'Questions',
+                href: admin.questions.index(),
+                icon: FileQuestion,
+            },
+            {
+                title: 'Answers',
+                href: admin.answers.index(),
+                icon: BadgeInfo,
             },
         ],
         footer: [

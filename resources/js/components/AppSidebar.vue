@@ -14,7 +14,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { useAdminNavigation } from '@/composables/useNavigation';
-import { dashboard } from '@/routes';
+import admin from '@/routes/admin';
 import type { Navigation } from '@/types';
 
 const navigation: Navigation = useAdminNavigation();
@@ -26,7 +26,7 @@ const navigation: Navigation = useAdminNavigation();
             <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
-                        <Link :href="dashboard()">
+                        <Link :href="admin.dashboard()">
                             <AppLogo />
                         </Link>
                     </SidebarMenuButton>
