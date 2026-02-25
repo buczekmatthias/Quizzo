@@ -20,7 +20,8 @@ class BaseQuizResource extends JsonResource
 			'is_public' => $this->is_public,
 			'started_at' => $this->started_at->format('d/m/Y - H:i'),
 			'finished_at' => $this->finished_at?->format('d/m/Y - H:i'),
-			'has_finished' => $this->finished_at?->isPast()
+			'has_finished' => $this->finished_at?->isPast(),
+			'participants_count' => $this->whenCounted('participants')
 		];
 	}
 }

@@ -42,12 +42,13 @@ class QuizController extends Controller
 		return Inertia::render('app/quiz/Index', [
 			'paginatedQuizzes' => PaginatedContentResource::make(
 				Quiz::query()
-							->select(['slug', 'title', 'is_public', 'started_at', 'finished_at'])
-							->hasNotFinished()
-							->orderBy('started_at', 'DESC')
-							->orderBy('finished_at', 'DESC')
-							->orderBy('title', 'ASC')
-							->paginate(10)
+					->select(['slug', 'title', 'is_public', 'started_at', 'finished_at'])
+					->withCount(['participants'])
+					->hasNotFinished()
+					->orderBy('started_at', 'DESC')
+					->orderBy('finished_at', 'DESC')
+					->orderBy('title', 'ASC')
+					->paginate(10)
 			)
 				->additional(['data_resource' => BaseQuizResource::class])
 				->toArray(request())
@@ -178,7 +179,8 @@ class QuizController extends Controller
 
 		Gate::authorize('view', [$quiz, $token]);
 
-		$quiz->load(['categories:slug,name']);
+		$quiz->load(['categories:slug,name'])
+			->loadCount(['participants']);
 
 		$answersColumns = match ($quiz->finished_at?->isPast()) {
 			true => 'id,slug,content,is_content_file_type,is_correct_answer,question_id',

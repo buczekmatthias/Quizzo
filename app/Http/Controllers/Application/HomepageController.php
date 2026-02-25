@@ -37,6 +37,7 @@ class HomepageController extends Controller
 						fn () => BaseQuizResource::collection(
 							Quiz::query()
 								->userFavorite()
+								->withCount(['participants'])
 								->limit(10)
 								->get()
 						),
@@ -48,6 +49,7 @@ class HomepageController extends Controller
 				fn () => BaseQuizResource::collection(
 					Quiz::query()
 						->select(['slug', 'title', 'is_public', 'started_at', 'finished_at'])
+						->withCount(['participants'])
 						->hasNotFinished()
 						->orderBy('started_at', 'DESC')
 						->orderBy('finished_at', 'DESC')

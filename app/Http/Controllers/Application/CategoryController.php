@@ -54,6 +54,7 @@ class CategoryController extends Controller
 				fn () => PaginatedContentResource::make(
 					$category
 						->quizzes()
+						->withCount(['participants'])
 						->paginate(25)
 				)
 						->additional(['data_resource' => BaseQuizResource::class])

@@ -17,7 +17,7 @@ import {
                 <Ellipsis class="size-4" />
             </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent class="w-56">
+        <DropdownMenuContent align="end" class="w-50">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <slot />

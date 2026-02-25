@@ -13,7 +13,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'isStaff'])->group(f
 
 	Route::resource('categories', CategoryController::class)->except('create', 'edit', 'show');
 
-	Route::resource('quizzes', QuizController::class)->only(['index', 'destroy']);
+	Route::resource('quizzes', QuizController::class)->only(['index', 'destroy'])->withTrashed(['destroy']);
 
 	Route::resource('users', UserController::class)->only(['index', 'update']);
 

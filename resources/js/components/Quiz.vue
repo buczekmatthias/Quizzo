@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Calendar, CalendarOff } from 'lucide-vue-next';
+import { Calendar, CalendarOff, User } from 'lucide-vue-next';
 import Heading from '@/components/Heading.vue';
 import QuizAccessBadge from '@/components/QuizAccessBadge.vue';
 import TextLink from '@/components/TextLink.vue';
@@ -31,6 +31,12 @@ defineProps<Props>();
                     }"
                 >
                     {{ quiz.finished_at ?? 'Not proivded' }}
+                </p>
+            </div>
+            <div class="flex items-center gap-2">
+                <User class="size-4 md:size-5" />
+                <p class="max-md:text-sm">
+                    {{ quiz.participants_count }}
                 </p>
             </div>
         </div>

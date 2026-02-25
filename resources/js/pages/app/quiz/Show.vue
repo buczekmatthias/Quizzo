@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Deferred, Head, Link, useForm } from '@inertiajs/vue3';
-import { Calendar, CalendarOff, Percent } from 'lucide-vue-next';
+import { Calendar, CalendarOff, Percent, User } from 'lucide-vue-next';
 import { computed, watch } from 'vue';
 import ActionButton from '@/components/ActionButton.vue';
 import Category from '@/components/Category.vue';
@@ -149,6 +149,14 @@ watch(
                     :description="quiz.finished_at ?? 'Not proivded'"
                 />
             </div>
+            <div class="flex gap-2">
+                <User class="mt-1 size-4 md:size-5" />
+                <Heading
+                    variant="small"
+                    title="Participants"
+                    :description="`${quiz.participants_count} participants`"
+                />
+            </div>
             <div class="flex gap-2" v-if="quizScore">
                 <Percent class="mt-1 size-4 md:size-5" />
                 <Heading
@@ -178,7 +186,11 @@ watch(
                 </Link>
             </Button>
             <Button as-child v-if="permissions.restore && quiz.deleted_at">
-                <Link :href="admin.quizzes.destroy(quiz)" method="delete">
+                <Link
+                    :href="admin.quizzes.destroy(quiz)"
+                    :data="{ action: 'restore' }"
+                    method="delete"
+                >
                     Restore
                 </Link>
             </Button>
@@ -187,7 +199,11 @@ watch(
                 v-if="permissions.forceDelete"
                 variant="destructive"
             >
-                <Link :href="admin.quizzes.destroy(quiz)" method="delete">
+                <Link
+                    :href="admin.quizzes.destroy(quiz)"
+                    :data="{ action: 'forceDelete' }"
+                    method="delete"
+                >
                     Force delete
                 </Link>
             </Button>

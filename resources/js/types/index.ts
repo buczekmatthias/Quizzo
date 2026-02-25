@@ -2,7 +2,7 @@ export * from './auth';
 export * from './navigation';
 export * from './ui';
 
-import type { Auth } from './auth';
+import type { Auth, User } from './auth';
 
 export type AppPageProps<
     T extends Record<string, unknown> = Record<string, unknown>,
@@ -50,7 +50,12 @@ export type Quiz = {
     did_user_do: boolean;
     token: string;
     categories: Category[];
+    created_at: string;
     deleted_at: string;
+    questions_count: number;
+    participants_count: number;
+    categories_count: number;
+    creator: User;
 };
 
 export type PaginatedQuiz = Pagination & { data: Quiz[] };

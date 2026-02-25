@@ -29,6 +29,7 @@ class ProfileController extends Controller
 				fn () => BaseQuizResource::collection(
 					Quiz::query()
 							->userFavorite()
+							->withCount(['participants'])
 							->paginate(10)
 				)
 			),
@@ -36,6 +37,7 @@ class ProfileController extends Controller
 				fn () => BaseQuizResource::collection(
 					request()->user()
 							->participatedQuizzes()
+							->withCount(['participants'])
 							->paginate(10)
 				)
 			),
