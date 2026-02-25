@@ -36,6 +36,7 @@ export type Category = {
     name: string;
     is_favorite?: boolean;
     quizzes_count: number;
+    users_count: number;
 };
 
 export type Quiz = {

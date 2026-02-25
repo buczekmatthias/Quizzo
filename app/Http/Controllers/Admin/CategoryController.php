@@ -3,9 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Category\CreateCategoryResource;
+use App\Http\Requests\Category\EditCategoryResource;
+use App\Http\Resources\Admin\CategoryResource;
+use App\Http\Resources\PaginatedContentResource;
 use App\Models\Category;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -16,23 +21,46 @@ class CategoryController extends Controller
 	 */
 	public function index(): Response
 	{
-		return Inertia::render('admin/Categories', []);
+		return Inertia::render('admin/Categories', [
+			'categories' => PaginatedContentResource::make(
+				Category::query()
+					->select(['slug', 'name'])
+					->withCount(['quizzes', 'users'])
+					->orderBy('name', 'asc')
+					->paginate(30)
+			)
+				->additional(['data_resource' => CategoryResource::class])
+				->toArray(request())
+		]);
 	}
 
 	/**
 	 * Store a newly created resource in storage.
 	 */
-	public function store(Request $request): RedirectResponse
+	public function store(CreateCategoryResource $request): RedirectResponse
 	{
+		$data = $request->validated();
+
+		Category::create([
+			'slug' => Str::orderedUuid(),
+			'name' => $data['name']
+		]);
+
 		return back();
 	}
 
 	/**
 	 * Update the specified resource in storage.
 	 */
-	public function update(Request $request, Category $category): RedirectResponse
+	public function update(EditCategoryResource $request, Category $category): RedirectResponse
 	{
-		return back();
+		$data = $request->validated();
+
+		$category->update([
+			'name' => $data['name']
+		]);
+
+		return back(status: 303);
 	}
 
 	/**
@@ -40,6 +68,13 @@ class CategoryController extends Controller
 	 */
 	public function destroy(Category $category): RedirectResponse
 	{
-		return back();
+		DB::transaction(function () use ($category) {
+			$category->quizzes()->detach();
+			$category->users()->detach();
+
+			$category->delete();
+		});
+
+		return back(status: 303);
 	}
 }

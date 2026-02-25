@@ -6,7 +6,7 @@ use Illuminate\Validation\Rule;
 
 trait QuizValidationRules
 {
-	public function questionsRules(): array
+	protected function questionsRules(): array
 	{
 		return [
 			'array',
@@ -14,7 +14,7 @@ trait QuizValidationRules
 		];
 	}
 
-	public function questionSlugRules(): array
+	protected function questionSlugRules(): array
 	{
 		return [
 			'uuid',
@@ -23,7 +23,7 @@ trait QuizValidationRules
 		];
 	}
 
-	public function answerSlugRules(): array
+	protected function answerSlugRules(): array
 	{
 		return [
 			'uuid',
