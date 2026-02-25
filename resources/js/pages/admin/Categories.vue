@@ -98,7 +98,7 @@ const submitCreateForm = () => {
         </Dialog>
 
         <PaginatedContent :pagination="categories" preserve-scroll>
-            <Table :headers>
+            <Table :headers has-actions>
                 <CategoryTableRow
                     v-for="category in categories.data"
                     :key="category.slug"

@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Enum\UserRole;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -81,6 +82,11 @@ class User extends Authenticatable
 	public function categories(): BelongsToMany
 	{
 		return $this->belongsToMany(Category::class, 'category_user');
+	}
+
+	public function scopeOrderInHierarchy(Builder $query, string $order = 'asc'): Builder
+	{
+		return $query->orderByRaw("array_position("."'{" . implode(',', array_reverse(array_column(UserRole::cases(), 'value'))) . "}'"."::text[],role) {$order}");
 	}
 
 	public function isStaff(): bool

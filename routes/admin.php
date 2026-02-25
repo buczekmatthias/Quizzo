@@ -15,7 +15,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'isStaff'])->group(f
 
 	Route::resource('quizzes', QuizController::class)->only(['index', 'destroy'])->withTrashed(['destroy']);
 
-	Route::resource('users', UserController::class)->only(['index', 'update']);
+	Route::resource('users', UserController::class)->only(['index', 'update', 'destroy']);
 
 	Route::get('/answers', ListAnswerController::class)->name('answers.index');
 

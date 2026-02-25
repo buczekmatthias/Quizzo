@@ -5,10 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\QuizResource;
 use App\Http\Resources\PaginatedContentResource;
-use App\Models\Answer;
 use App\Models\Quiz;
+use App\Services\QuizForceDeleteService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -53,30 +52,7 @@ class QuizController extends Controller
 		match ($action) {
 			'delete' => $quiz->delete(),
 			'restore' => $quiz->restore(),
-			'forceDelete' => DB::transaction(function () use ($quiz) {
-				Storage::deleteDirectory("questions/{$quiz->slug}");
-
-				$answers = Answer::select(['id'])
-					->whereIn(
-						'question_id',
-						$quiz->questions()->pluck('id')
-					)
-					->pluck('id');
-
-				DB::table('answer_user')
-					->where('user_id', request()->user()->id)
-					->whereIn('answer_id', $answers)
-					->delete();
-
-				DB::table('answers')->whereIn('id', $answers)->delete();
-
-				$quiz->questions()->delete();
-
-				$quiz->participants()->detach();
-				$quiz->categories()->detach();
-
-				$quiz->forceDelete();
-			}, 3),
+			'forceDelete' => QuizForceDeleteService::forceDelete($quiz),
 			default => ''
 		};
 

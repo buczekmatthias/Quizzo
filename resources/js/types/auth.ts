@@ -1,3 +1,5 @@
+import type { Quiz } from '.';
+
 export type User = {
     name: string;
     username: string;
@@ -5,6 +7,8 @@ export type User = {
     created_at: string;
     updated_at: string;
     [key: string]: unknown;
+    quizzes: Quiz[];
+    role: string;
 };
 
 export type Auth = {

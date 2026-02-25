@@ -66,7 +66,7 @@ const headers = [
 
     <AdminLayout :breadcrumbs="breadcrumbs" class="max-w-fit">
         <PaginatedContent :pagination="allQuizzes" preserve-scroll>
-            <Table :headers>
+            <Table :headers has-actions>
                 <TableRow v-for="quiz in allQuizzes.data" :key="quiz.slug">
                     <TableCell>
                         {{ quiz.title }}
