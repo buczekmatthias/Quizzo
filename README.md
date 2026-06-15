@@ -1,6 +1,6 @@
 # Quizzo
 
-A template for quiz posting application.
+A platform for creating and sharing quizzes.
 
 ## Stack
 
